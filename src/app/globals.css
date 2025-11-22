@@ -1,3 +1,5 @@
+/* stylelint-disable at-rule-no-unknown */
+/* Allow Tailwind's @-rules so editors/linters that don't know Tailwind won't raise errors */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -11,3 +13,30 @@ html, body {
   color: rgb(var(--foreground));
   background: rgb(var(--background));
 }
+
+/* Animated gradient background */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.bg-animated-gradient {
+  background: linear-gradient(270deg, #fef3c7, #e0f2fe, #ede9fe);
+  background-size: 600% 600%;
+  animation: gradientShift 12s ease infinite;
+}
+
+/* blob animations */
+@keyframes blob {
+  0% { transform: translate(0px, 0px) scale(1); }
+  33% { transform: translate(10px, -10px) scale(1.05); }
+  66% { transform: translate(-10px, 10px) scale(0.95); }
+  100% { transform: translate(0px, 0px) scale(1); }
+}
+.animate-blob { animation: blob 8s ease-in-out infinite; }
+.animation-delay-2000 { animation-delay: 2s; }
+
+/* small utilities */
+.blur-2xl { filter: blur(28px); }
+.blur-3xl { filter: blur(36px); }
