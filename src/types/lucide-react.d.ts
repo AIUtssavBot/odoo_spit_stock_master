@@ -1,0 +1,26 @@
+declare module "lucide-react" {
+  export const Boxes: any;
+  export const Package: any;
+  export const ArrowLeftRight: any;
+  export const LayoutDashboard: any;
+  export const Settings: any;
+  export const History: any;
+  export const User: any;
+  export const Edit: any;
+  export const MapPin: any;
+  export const AlertTriangle: any;
+  export const CheckCircle: any;
+  export const FileText: any;
+  export const TrendingUp: any;
+  export const TrendingDown: any;
+  export const BarChart3: any;
+  export const ArrowLeft: any;
+  export const Eye: any;
+  export const EyeOff: any;
+  export const LogIn: any;
+  export const UserPlus: any;
+  export const XCircle: any;
+  export const ArrowUpRight: any;
+  export const ArrowDownRight: any;
+  export const Filter: any;
+}
