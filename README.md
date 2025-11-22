@@ -46,6 +46,41 @@ npx prisma migrate dev
 npx prisma generate
 ```
 
+Start a local MySQL (Docker example)
+
+If you don't have MySQL running locally, you can quickly start one with Docker (example):
+
+```powershell
+docker run --name stockmaster-mysql \
+	-e MYSQL_ROOT_PASSWORD=rootpassword \
+	-e MYSQL_DATABASE=stockmaster \
+	-p 3306:3306 \
+	-d mysql:8.0
+
+# wait a few seconds for MySQL to initialize, then check the container is healthy:
+docker ps --filter "name=stockmaster-mysql"
+docker logs stockmaster-mysql --tail 50
+```
+
+Prisma CLI and environment variables
+
+Prisma CLI commands may not automatically pick up `.env.local`. Two common approaches when running Prisma commands from PowerShell:
+
+- Use the `--env-file` flag (supported by recent Prisma versions):
+
+```powershell
+npx prisma migrate dev --env-file=.env.local
+```
+
+- Or export the DATABASE_URL into the PowerShell environment for the current session:
+
+```powershell
+$env:DATABASE_URL = 'mysql://root:rootpassword@localhost:3306/stockmaster'
+npx prisma migrate dev
+```
+
+The project seed script uses dotenv to load `.env.local`, so `npm run seed` will work once `.env.local` exists and the DB is reachable.
+
 4. (Optional) Seed demo data
 
 ```powershell
