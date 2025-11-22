@@ -11,8 +11,7 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Filter,
-  Download,
-  RefreshCw
+  ArrowLeftRight
 } from "lucide-react";
 import DashboardFilters from "@/components/DashboardFilters";
 import RecentOperations from "@/components/RecentOperations";
@@ -20,8 +19,26 @@ import RecentOperations from "@/components/RecentOperations";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const kpi = await getKPIs();
-  const recentOps = await listOperations();
+  let kpi: any, recentOps: any[];
+  let databaseError = false;
+  
+  try {
+    kpi = await getKPIs();
+    recentOps = await listOperations();
+  } catch (error) {
+    console.error("Database connection error:", error);
+    databaseError = true;
+    // Set default values
+    kpi = {
+      totalProductsQty: 0,
+      lowStockCount: 0,
+      outOfStockCount: 0,
+      pendingReceipts: 0,
+      pendingDeliveries: 0,
+      internalTransfersScheduled: 0,
+    };
+    recentOps = [];
+  }
   
   return (
     <main className="p-6">
@@ -29,6 +46,11 @@ export default async function DashboardPage() {
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Inventory Dashboard</h1>
           <p className="mt-2 text-gray-600">Real-time snapshot of inventory health and operations</p>
+          {databaseError && (
+            <div className="mt-2 p-2 bg-yellow-100 border border-yellow-400 text-yellow-700 rounded">
+              <p>⚠️ Database connection error. Please check your MySQL configuration.</p>
+            </div>
+          )}
         </div>
         <div className="flex gap-2">
           <Button variant="outline" size="sm">
@@ -36,11 +58,11 @@ export default async function DashboardPage() {
             Filters
           </Button>
           <Button variant="outline" size="sm">
-            <Download className="w-4 h-4 mr-2" />
+            <ArrowDownRight className="w-4 h-4 mr-2" />
             Export
           </Button>
           <Button variant="outline" size="sm">
-            <RefreshCw className="w-4 h-4 mr-2" />
+            <ArrowLeftRight className="w-4 h-4 mr-2" />
             Refresh
           </Button>
         </div>
@@ -87,7 +109,7 @@ export default async function DashboardPage() {
         <EnhancedKPI 
           title="Internal Transfers" 
           value={kpi.internalTransfersScheduled} 
-          icon={RefreshCw}
+          icon={ArrowLeftRight}
           color="orange"
         />
       </div>
@@ -146,9 +168,9 @@ function EnhancedKPI({
   icon: any; 
   badge?: "warning" | "destructive"; 
   trend?: number;
-  color?: string;
+  color?: "blue" | "yellow" | "red" | "green" | "purple" | "orange";
 }) {
-  const colorClasses = {
+  const colorClasses: Record<string, string> = {
     blue: "bg-blue-500",
     yellow: "bg-yellow-500", 
     red: "bg-red-500",
@@ -157,7 +179,7 @@ function EnhancedKPI({
     orange: "bg-orange-500"
   };
 
-  const bgClasses = {
+  const bgClasses: Record<string, string> = {
     blue: "bg-blue-50",
     yellow: "bg-yellow-50",
     red: "bg-red-50", 
@@ -170,8 +192,8 @@ function EnhancedKPI({
     <Card className="hover:shadow-lg transition-shadow">
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">
-          <div className={`p-2 rounded-lg ${bgClasses[color]}`}>
-            <Icon className={`w-5 h-5 ${colorClasses[color].replace('bg-', 'text-')}`} />
+          <div className={`p-2 rounded-lg ${bgClasses[color as keyof typeof bgClasses]}`}>
+            <Icon className={`w-5 h-5 ${colorClasses[color as keyof typeof colorClasses].replace('bg-', 'text-')}`} />
           </div>
           {typeof badge === "string" && (
             <Badge variant={badge}>{badge === "warning" ? "Attention" : "Alert"}</Badge>
